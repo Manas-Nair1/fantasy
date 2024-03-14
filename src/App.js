@@ -5,11 +5,13 @@ import { run } from './gemini';
 
 const Home = () => {
   const [parsedData, setParsedData] = useState(null);
-  const [cardReady, setCardReady] = useState(false)
+  const [cardReady, setCardReady] = useState(false);
+  const [geminiResponse, setGeminiResponse] = useState(""); // Use useState for geminiResponse
+
   const toggleReady = () => {
-    setCardReady(!cardReady)
-  }
-  const geminiResponse = "";
+    setCardReady(!cardReady);
+  };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     Papa.parse(file, {
@@ -45,12 +47,16 @@ const Home = () => {
     localStorage.setItem('rating', deck[x_second].rating);
     localStorage.setItem('timewatched', deck[x_second].timewatched);
     console.log(parsedData); // Log parsedData if needed
-    // window.location.href = "index.html";
-    run().then((result) => {geminiResponse = result})
-    toggleReady()
+
+    // Call the run function and update geminiResponse using setGeminiResponse
+    run().then((result) => {
+      setGeminiResponse(result);
+      toggleReady();
+    });
   };
+
   return (
-      <div>
+    <div>
       <input type="file" id="upload-file" accept=".csv" onChange={handleFileChange} />
       <button id="upload-confirm" disabled={!parsedData} onClick={createCard}>Upload File</button>
       <button type="button" id="create-card" onClick={createCard}>Create Card</button>
@@ -58,8 +64,7 @@ const Home = () => {
         <MovieDetails powers={geminiResponse}></MovieDetails>
       )}
     </div>
-    
   );
 }
 
-export default Home
+export default Home;
