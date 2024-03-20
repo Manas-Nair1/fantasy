@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
 import MovieDetails from './card';
-import { run } from './gemini';
+import {randomMovie} from './randomselection';
+
 
 const Home = () => {
   const [parsedData, setParsedData] = useState(null);
-  const [cardReady, setCardReady] = useState(false);
+  const [cardReady, setCardReady] = useState(false)
   const toggleReady = () => {
-    setCardReady(!cardReady);
-  };
-
+    setCardReady(!cardReady)
+  }
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     Papa.parse(file, {
@@ -24,7 +24,7 @@ const Home = () => {
 
   const createCard = () => {
     if (!parsedData) return; // Ensure parsedData is available
-  
+
     const deck = [];
     for (let i = 0; i < 5; i++) { // Create 5 different movies
       const x = Math.floor(Math.random() * parsedData.length); // Generate random movie number index
@@ -47,17 +47,17 @@ const Home = () => {
     localStorage.setItem('timewatched', deck[x_second].timewatched);
     toggleReady()
   };
-
   return (
-    <div>
+      <div>
       <input type="file" id="upload-file" accept=".csv" onChange={handleFileChange} />
       <button id="upload-confirm" disabled={!parsedData} onClick={createCard}>Upload File</button>
-      <button type="button" id="create-card" onClick={createCard}>Create Card</button>
       {cardReady && (
         <MovieDetails></MovieDetails>
       )}
     </div>
+
   );
 }
+
 
 export default Home
