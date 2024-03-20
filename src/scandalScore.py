@@ -14,7 +14,7 @@ def get_sentiment():
     if movie_title:
         total_score = 0
         num_comments = 0
-        
+
         reddit = praw.Reddit(client_id='-qZIPOdSimD2BklZp5PSWw', 
                              client_secret='AYKyne5C3GRMAoxUXpDTadvuVxUEwQ', 
                              user_agent='WebScraping')
@@ -35,8 +35,10 @@ def get_sentiment():
         # Calculate the average sentiment score
         if num_comments > 0:
             average_score = total_score / num_comments
+            rounded_average_score = round(average_score, 2)
+
             # Return the average score along with the movie title
-            return jsonify({'movie_title': movie_title, 'scandal_score': average_score})
+            return jsonify({'movie_title': movie_title, 'scandal_score': rounded_average_score})
         else:
             return jsonify({'error': 'No comments found for the given movie title'})
     else:
