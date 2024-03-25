@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Papa from 'papaparse';
 import MovieDetails from './card';
 import { run } from './gemini';
+//import {randomMovie} from './randomselection';
 
 const Home = () => {
   const [parsedData, setParsedData] = useState(null);
@@ -39,8 +40,9 @@ const Home = () => {
       };
       deck.push(movie);
     }
-  
+    localStorage.setItem('deck', JSON.stringify(deck))
     const x_second = Math.floor(Math.random() * 5);
+    localStorage.setItem('random-int', x_second)
     localStorage.setItem('movie-title', deck[x_second].movietitle);
     localStorage.setItem('year', deck[x_second].year);
     localStorage.setItem('review', deck[x_second].review);
@@ -59,9 +61,8 @@ const Home = () => {
     <div>
       <input type="file" id="upload-file" accept=".csv" onChange={handleFileChange} />
       <button id="upload-confirm" disabled={!parsedData} onClick={createCard}>Upload File</button>
-      <button type="button" id="create-card" onClick={createCard}>Create Card</button>
       {cardReady && (
-        <MovieDetails powers={geminiResponse}></MovieDetails>
+        <MovieDetails></MovieDetails>
       )}
     </div>
   );
