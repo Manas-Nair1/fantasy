@@ -29,6 +29,21 @@ function MovieDetails() {
       const totalPopularity = creditsResponse.data.cast.reduce((total, castMember) => total + castMember.popularity, 0);
       const randomIndex = Math.floor(Math.random() * creditsResponse.data.cast.length);
       let geminiResponse = await run(creditsResponse.data.cast[randomIndex].character)
+
+       // Fetch sentiment values from Flask server
+       try {
+        const response = await axios.get('http://localhost:5000/sentiment', {
+          params: {
+            movie_title: movieTitle
+          }
+        });
+        console.log('Response from Flask server:', response.data.scandal_score); // Add this line
+        const sentimentValues = localStorage.setItem('scandal',response.data.scandal_score);
+        setMovieDetails(prevState => ({ ...prevState, sentimentValues: sentimentValues }));
+      } catch (error) {
+        console.error('Error fetching sentiment values:', error);
+      }
+      
       setMovieDetails({
         movieTitle: movieTitle,
         year: localStorage.getItem('year'),
@@ -43,16 +58,15 @@ function MovieDetails() {
     };
 
     fetchMovieDetails(); //create main playing card
+    console.log(localStorage.getItem('scandal'))
   }, []);
   
-
   return (
     <div className="v4_21">
       <div className="v3_2"></div>
       <span className="v3_5">{movieDetails.movieTitle}</span>
       <span className="v4_2">{movieDetails.year}</span>
       <span className="v4_13">{movieDetails.attackDamage}</span>
-      <span className="v4_15">SCANDAL HERE</span>
       <span className="v4_16">{movieDetails.clout}</span>
       <span className="v4_18">{movieDetails.review}</span>
       <span className="v4_19">{movieDetails.rating}</span>
@@ -60,6 +74,7 @@ function MovieDetails() {
       <span className="v4_14">{movieDetails.superpower}</span>
       <span className="v4_5">attack damage</span>
       <span className="v4_6">super power</span>
+      <span className="v4_15">{localStorage.getItem('scandal')}</span>
       <div className="v4_8">
         <img id="image" src={movieDetails.image} alt="Stored Image" />
       </div>
